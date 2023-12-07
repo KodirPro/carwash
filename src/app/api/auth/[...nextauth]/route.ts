@@ -6,40 +6,42 @@ export const authOptions: NextAuthOptions = {
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        username: { label: "Username", type: "text", placeholder: "login" },
-        password: { label: "Password", type: "password" , placeholder: "password"}
+        name: { label: "Login", type: "text", placeholder: "Login" },
+        password: {
+          label: "Password",
+          type: "password",
+          placeholder: "Password",
+        },
       },
       async authorize(credentials) {
+        return { id: "1", ...credentials };
         try {
           const res = await fetch("http://localhost/kws/hs/Database/DB", {
             headers: {
               Authorization:
                 "Basic " +
-                Buffer.from(credentials?.username+":"+credentials?.password).toString("base64"),
+                Buffer.from(
+                  credentials?.name + ":" + credentials?.password
+                ).toString("base64"),
             },
           });
 
-          // const data = await res.json();
+          if (res.ok) {
+            const revalidate = await fetch("/api/update-page?secret=123");
 
-          if (res.ok) return { id: "1", ...credentials };
+            if (revalidate.ok) return { id: "1", name: credentials?.name };
+            // { user: { name: 'Alex', email: "alex@johnson.com", image: "image.png" } }
+          }
         } catch (error) {
           console.error(error);
         }
-        return null;  
-
+        return null;
       },
     }),
   ],
-  callbacks: {
-    signIn: async ({ account }) => {
-      if (account?.provider === "credentials") return true;
-
-      return false;
-    },
-  },
   secret: `process.env.NEXTAUTH_SECRET`,
-  jwt: { maxAge: 86400 * 7 + 10 },
-  session: { maxAge: 86400 * 7 },
+  // jwt: { maxAge: 86400 * 7 + 10 },
+  // session: { maxAge: 86400 * 7 },
 };
 
 const handler = NextAuth(authOptions);
