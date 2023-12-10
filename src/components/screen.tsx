@@ -136,12 +136,19 @@ export function Screen({ data }: { data: IData }) {
   const sendData = async () => {
     if (!inputs.total) return;
 // 
-    // const res = await fetch("http://localhost/kws/hs/database/ds", {
+    const res = await fetch("http://localhost/kws/hs/database/ds", {
+      method: "POST",
+      body: JSON.stringify({ carModel, basket, ...inputs }),
+      headers: {"Content-Type":"application/json"},
+      
       // headers: { Authorization: "Bearer " + "session.accessToken" },
       // cache: "no-store",
-    // });
-
-    // const data = await res.json();
+    });
+    if (res.ok) {
+      const data = await res.json();
+      console.log("ok");
+      
+    }
 
     console.log({ carModel, basket, ...inputs });
     clearInputs();
