@@ -3,7 +3,7 @@ import { Screen } from "@/components";
 
 export default async function Page() {
   const res = await fetch("http://localhost/kws/hs/database/db", {
-    // http://localhost/kws/hs/database/car"
+    // http://localhost/kws/hs/database/car
     headers: {
       Authorization:
         "Basic " + Buffer.from("Администратор" + ":" + "123").toString("base64"),
