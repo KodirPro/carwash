@@ -1,59 +1,81 @@
 "use client";
 
-import { IModel } from "./types";
-import { styled } from "@mui/material/styles";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell, { tableCellClasses } from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
+import { ActiveButtons } from "./active-buttons";
+import { IOrder } from "./types";
+import {
+  AddOutlined,
+  RemoveOutlined,
+  AccountBalanceWalletOutlined,
+} from "@mui/icons-material";
 
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  // [`&.${tableCellClasses.head}`]: {
-  //   backgroundColor: theme.palette.common.black,
-  //   color: theme.palette.common.white,
-  //   fontSize: "1rem",
-  // },
-  // [`&.${tableCellClasses.body}`]: {
-  //   fontSize: "1rem",
-  // },
-}));
-
-const StyledTableRow = styled(TableRow)(({ theme }) => ({
-  "&:nth-of-type(odd)": {
-    backgroundColor: theme.palette.action.hover,
-  },
-  // hide last border
-  "&:last-child td, &:last-child th": {
-    border: 0,
-  },
-}));
-
-export function Basket({ basket }: { basket: IModel[] }) {
+export function Basket({
+  total,
+  basket,
+  sendData,
+  addOrder,
+  removeOrder,
+  clearInputs,
+}: {
+  total: number;
+  basket: IOrder[];
+  sendData: Function;
+  addOrder: Function;
+  removeOrder: Function;
+  clearInputs: Function;
+}) {
   return (
-    <div className="h-full overflow-y-auto bg-amber-50 shadow-lg">
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: "100%" }} aria-label="customized table">
-          <TableHead className="bg-blue-950">
-            <TableRow>
-              <StyledTableCell className="text-white text-lg">Service</StyledTableCell>
-              <StyledTableCell className="text-white text-lg">Price</StyledTableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {basket.map((row) => (
-              <StyledTableRow key={row.id}>
-                <StyledTableCell component="th" scope="row">
-                  {row.service}
-                </StyledTableCell>
-                <StyledTableCell>{row.price}</StyledTableCell>
-              </StyledTableRow>
+    <div className="grid grid-rows-[min-content_auto_min-content] lg:grid-rows-[auto_min-content] overflow-hidden whitespace-nowrap bg-amber-50 shadow-lg">
+      <section className="lg:hidden flex justify-evenly py-1 pb-2.5 animate-fade-in text-3xl ">
+        <ActiveButtons clearInputs={clearInputs} sendData={sendData} />
+      </section>
+      <div className="overflow-auto bg-white shadow-md scrollbar-thin scrollbar-thumb-blue-200 scrollbar-track-transparent">
+        <table className="w-full">
+          <thead>
+            <tr className="bg-blue-950 sticky top-0 z-10 text-white text-lg text-center font-medium">
+              <th className="pl-3 py-2.5 text-left">Service</th>
+              <th className="px-0 py-2.5">Price</th>
+              <th className="py-2.5">Count</th>
+            </tr>
+          </thead>
+          <tbody className="text-sm">
+            {basket.map((order) => (
+              <tr
+                key={order.service}
+                className="even:bg-blue-50 last:shadow-md text-center"
+              >
+                <td className="px-2 py-2.5 text-left overflow-hidden max-w-[160px] text-ellipsis">{order.service}</td>
+                <td className="px-2 py-2.5">{order.price*order.orderCount}</td>
+                <td className="px-2 py-2.5">
+                  <div className="flex items-center justify-center gap-2">
+                    <button
+                      className="flex justify-center items-center w-8 h-8 bg-rose-50 text-rose-600 hover:bg-rose-200 rounded shadow-md"
+                      onClick={() => removeOrder(order)}
+                      aria-label="remove"
+                    >
+                      <RemoveOutlined />
+                    </button>
+                    <span>{order.orderCount}</span>
+                    <button
+                      className="flex justify-center items-center w-8 h-8 bg-emerald-50 text-emerald-600 hover:bg-emerald-200 rounded p-1 shadow-md"
+                      onClick={() => addOrder(order)}
+                      aria-label="add"
+                    >
+                      <AddOutlined />
+                    </button>
+                  </div>
+                </td>
+              </tr>
             ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+          </tbody>
+        </table>
+      </div>
+      <div className="grid gap-1 p-8 pt-5 text-slate-600 text-xl">
+        <h3 className="font-medium px-2">Total:</h3>
+        <div className="p-3.5 font-medium bg-emerald-50 rounded-md shadow-md">
+          <AccountBalanceWalletOutlined className="text-slate-500" />{" "}
+          <span className="font-bold text-2xl pl-1 align-middle">{total}</span>
+        </div>
+      </div>
     </div>
   );
 }

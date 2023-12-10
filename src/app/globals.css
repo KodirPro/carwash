@@ -6,10 +6,11 @@
 .MuiInputLabel-root,
 .MuiInputBase-input {
   background-color: white;
+  font-family: inherit;
 }
 
 .MuiInputLabel-root {
-  padding: 0.1rem 0.5rem;
+  padding: 0.1rem 0.5rem !important;
 }
 
 .MuiInputLabel-root,

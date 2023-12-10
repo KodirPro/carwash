@@ -1,7 +1,7 @@
 import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
-export const authOptions: NextAuthOptions = {
+const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -14,23 +14,22 @@ export const authOptions: NextAuthOptions = {
         },
       },
       async authorize(credentials) {
-        return { id: "1", ...credentials };
+        // return { id: "1", name: credentials?.name };
         try {
-          const res = await fetch("http://localhost/kws/hs/Database/DB", {
+          const res = await fetch("http://localhost/kws/hs/database/user", {
             headers: {
               Authorization:
                 "Basic " +
                 Buffer.from(
-                  credentials?.name + ":" + credentials?.password
+                  credentials?.name + ":" + credentials?.password,
                 ).toString("base64"),
             },
           });
-
           if (res.ok) {
-            const revalidate = await fetch("/api/update-page?secret=123");
-
-            if (revalidate.ok) return { id: "1", name: credentials?.name };
-            // { user: { name: 'Alex', email: "alex@johnson.com", image: "image.png" } }
+            const user = await res.json();
+            console.log(user);
+              
+            return user;
           }
         } catch (error) {
           console.error(error);
@@ -39,9 +38,13 @@ export const authOptions: NextAuthOptions = {
       },
     }),
   ],
-  secret: `process.env.NEXTAUTH_SECRET`,
-  // jwt: { maxAge: 86400 * 7 + 10 },
-  // session: { maxAge: 86400 * 7 },
+  callbacks: {
+    async redirect() {
+      return "/api/update-page";
+    },
+  },
+  secret: process.env.NEXTAUTH_SECRET,
+  jwt: { maxAge: 86400 * 7 },
 };
 
 const handler = NextAuth(authOptions);
