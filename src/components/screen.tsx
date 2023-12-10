@@ -135,16 +135,37 @@ export function Screen({ data }: { data: IData }) {
 
   const sendData = async () => {
     if (!inputs.total) return;
-// 
+
     // const res = await fetch("http://localhost/kws/hs/database/ds", {
-      // headers: { Authorization: "Bearer " + "session.accessToken" },
-      // cache: "no-store",
+    //   headers: { Authorization: "Bearer " + "session.accessToken" },
+    //   cache: "no-store",
     // });
 
     // const data = await res.json();
 
     console.log({ carModel, basket, ...inputs });
     clearInputs();
+  };
+
+  const getClient = async (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key !== "Enter") return;
+
+    const res = await fetch(
+      `http://localhost/kws/hs/database/car?carNumber=${inputs.carNumber}`,
+      {
+        // cache: "no-store",
+      },
+    );
+
+    if (res.ok) {
+      const data = await res.json();
+
+      setCarModel(data.carModel);
+      setCarInput(data.carModel);
+      setInputs({ ...inputs, phoneNumber: data.phoneNumber });
+    } else {
+      console.log("Not Found");
+    }
   };
 
   return (
@@ -157,6 +178,7 @@ export function Screen({ data }: { data: IData }) {
             name="carNumber"
             variant="outlined"
             label="Car Number"
+            onKeyDown={getClient}
             onChange={handleInput}
             value={inputs.carNumber}
             InputProps={{

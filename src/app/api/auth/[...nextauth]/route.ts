@@ -14,27 +14,27 @@ const authOptions: NextAuthOptions = {
         },
       },
       async authorize(credentials) {
-        // return { id: "1", name: credentials?.name };
-        try {
-          const res = await fetch("http://localhost/kws/hs/database/user", {
-            headers: {
-              Authorization:
-                "Basic " +
-                Buffer.from(
-                  credentials?.name + ":" + credentials?.password,
-                ).toString("base64"),
-            },
-          });
-          if (res.ok) {
-            const user = await res.json();
-            console.log(user);
+        return { id: "1", name: credentials?.name };
+        // try {
+        //   const res = await fetch("http://localhost/kws/hs/database/user", {
+        //     headers: {
+        //       Authorization:
+        //         "Basic " +
+        //         Buffer.from(
+        //           credentials?.name + ":" + credentials?.password,
+        //         ).toString("base64"),
+        //     },
+        //   });
+        //   if (res.ok) {
+        //     const user = await res.json();
+        //     console.log(user);
               
-            return user;
-          }
-        } catch (error) {
-          console.error(error);
-        }
-        return null;
+        //     return user;
+        //   }
+        // } catch (error) {
+        //   console.error(error);
+        // }
+        // return null;
       },
     }),
   ],
