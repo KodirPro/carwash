@@ -1,6 +1,6 @@
 "use client";
 
-import { ActiveButtons } from "./active-buttons";
+import { ActiveButtons } from ".";
 import { IOrder } from "./types";
 import {
   AddOutlined,
@@ -43,8 +43,12 @@ export function Basket({
                 key={order.service}
                 className="even:bg-blue-50 last:shadow-md text-center"
               >
-                <td className="px-2 py-2.5 text-left overflow-hidden max-w-[160px] text-ellipsis">{order.service}</td>
-                <td className="px-2 py-2.5">{order.price*order.orderCount}</td>
+                <td className="px-2 py-2.5 text-left overflow-hidden max-w-[160px] text-ellipsis">
+                  {order.service}
+                </td>
+                <td className="px-2 py-2.5">
+                  {order.price * order.orderCount}
+                </td>
                 <td className="px-2 py-2.5">
                   <div className="flex items-center justify-center gap-2">
                     <button

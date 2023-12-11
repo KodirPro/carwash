@@ -1,4 +1,6 @@
-import React from "react";
+"use client";
+
+import { signOut } from "next-auth/react";
 import { Button, Tooltips } from ".";
 import {
   DeleteOutline,
@@ -13,13 +15,18 @@ export function ActiveButtons({
   clearInputs: Function;
   sendData: Function;
 }) {
+  const logOut = () => {
+    clearInputs();
+    signOut();
+  };
+
   return (
     <>
       <Tooltips description="Log Out">
         <div>
           <Button
-            aria-label="sign-out"
-            href="/api/auth/signout"
+            onClick={logOut}
+            aria-label="log out"
             className="bg-amber-500"
           >
             <LogoutOutlined />
@@ -34,9 +41,9 @@ export function ActiveButtons({
             className="bg-rose-600"
           >
             <DeleteOutline />
-          </Button>{" "}
+          </Button>
         </div>
-      </Tooltips>{" "}
+      </Tooltips>
       <Tooltips description="Send Data">
         <div>
           <Button
@@ -45,7 +52,7 @@ export function ActiveButtons({
             className="bg-emerald-600"
           >
             <TaskAltOutlined />
-          </Button>{" "}
+          </Button>
         </div>
       </Tooltips>
     </>

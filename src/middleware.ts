@@ -8,9 +8,13 @@ export async function middleware(request: NextRequest) {
   } = request;
   const queryParams = new URLSearchParams(searchParams);
   const token = await getToken({ req: request });
+  console.log(token);
+  
 
   if (
-    ["/", "/api/auth/signout", "/api/update-page"].includes(pathname) &&
+    ["/", "/api/client", "/api/auth/signout", "/api/update-page"].includes(
+      pathname,
+    ) &&
     !token
   )
     return NextResponse.redirect(

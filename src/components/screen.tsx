@@ -1,8 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { IData, IInputs, IOrder, IStoredData } from "./types";
-import { Basket, Services, NumericInput, Button, Tooltips } from "@/components";
+import {
+  Basket,
+  Services,
+  NumericInput,
+  Button,
+  Tooltips,
+  ActiveButtons,
+} from "@/components";
+import { PatternFormat } from "react-number-format";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import InputAdornment from "@mui/material/InputAdornment";
@@ -10,14 +18,14 @@ import {
   PinOutlined,
   PhoneOutlined,
   CreditCardOutlined,
-  MonetizationOnOutlined,
   MenuOutlined,
+  PaymentsOutlined,
 } from "@mui/icons-material";
-import { PatternFormat } from "react-number-format";
-import { ActiveButtons } from "./active-buttons";
 
 export function Screen({ data }: { data: IData }) {
-  const [isRefreshing, setIsRefreshing] = useState(true);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [newClient, setNewClient] = useState(false);
+  const [refreshing, setRefreshing] = useState(true);
   const [carInput, setCarInput] = useState("");
   const [carModel, setCarModel] = useState<string | null>(null);
   const [basket, setBasket] = useState<IOrder[]>([]);
@@ -58,7 +66,7 @@ export function Screen({ data }: { data: IData }) {
   }, [carModel, basket, inputs]);
 
   const setWallet = () => {
-    if (isRefreshing) return setIsRefreshing(false);
+    if (refreshing) return setRefreshing(false);
 
     const total = basket.reduce(
       (total, item) => total + item.price * item.orderCount,
@@ -120,8 +128,9 @@ export function Screen({ data }: { data: IData }) {
   };
 
   const clearInputs = () => {
-    setBasket([]);
     localStorage.removeItem("storedData");
+    setBasket([]);
+    setNewClient(false);
     setCarModel(null);
     setCarInput("");
     setInputs({
@@ -135,27 +144,33 @@ export function Screen({ data }: { data: IData }) {
 
   const sendData = async () => {
     if (!inputs.total) return;
-// 
-    // const res = await fetch("http://localhost/kws/hs/database/ds", {
-      // headers: { Authorization: "Bearer " + "session.accessToken" },
-      // cache: "no-store",
-    // });
 
-    // const data = await res.json();
+    const res = await fetch("api/client", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        link: `${process.env.NEXT_PUBLIC_API_URL}ds`,
+        ...inputs,
+        carModel,
+        basket,
+      }),
+    });
 
-    console.log({ carModel, basket, ...inputs });
-    clearInputs();
+    if (res.ok) clearInputs();
+    else console.log("ERROR");
   };
 
-  const getClient = async (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key !== "Enter") return;
+  const getClient = async (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key !== "Enter" || !inputs.carNumber) return;
 
-    const res = await fetch(
-      `http://localhost/kws/hs/database/car?carNumber=${inputs.carNumber}`,
-      {
-        // cache: "no-store",
-      },
-    );
+    const res = await fetch("api/client", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        link: `${process.env.NEXT_PUBLIC_API_URL}car`,
+        carNumber: inputs.carNumber,
+      }),
+    });
 
     if (res.ok) {
       const data = await res.json();
@@ -164,44 +179,54 @@ export function Screen({ data }: { data: IData }) {
       setCarInput(data.carModel);
       setInputs({ ...inputs, phoneNumber: data.phoneNumber });
     } else {
-      console.log("Not Found");
+      setNewClient(true);
+      inputRef.current?.focus();
     }
   };
 
   return (
     <div className="fixed inset-0 grid grid-rows-[min-content_auto_min-content] animate-fade-in">
       <header className="bg-sky-100 flex gap-5 p-6 justify-between items-center shadow-md relative">
-        <section className="grid h-16 pt-2 sm:h-auto overflow-y-auto sm:grid-cols-3 gap-5 items-center scrollbar-thin scrollbar-thumb-blue-200 scrollbar-track-transparent animate-fade-in">
-          <TextField
-            required
-            type="search"
-            name="carNumber"
-            variant="outlined"
-            label="Car Number"
-            onKeyDown={getClient}
-            onChange={handleInput}
-            value={inputs.carNumber}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <PinOutlined />
-                </InputAdornment>
-              ),
-            }}
-          />
+        <section className="grid h-16 pt-2 sm:h-auto overflow-y-auto sm:overflow-y-visible sm:grid-cols-3 gap-x-5 gap-y-8 items-top scrollbar-thin scrollbar-thumb-blue-200 scrollbar-track-transparent animate-fade-in">
+          <div className="relative">
+            <TextField
+              required
+              type="search"
+              name="carNumber"
+              variant="outlined"
+              label="Car Number"
+              onChange={handleInput}
+              value={inputs.carNumber}
+              onKeyDown={(event) => getClient(event)}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <PinOutlined />
+                  </InputAdornment>
+                ),
+              }}
+            />
+            {newClient && (
+              <div className="absolute -top-2.5 right-2.5 py-1 px-2 rounded shadow-md bg-emerald-500 text-white text-xs leading-none font-bold animate-fade-in">
+                New Client
+              </div>
+            )}
+          </div>
           <PatternFormat
             mask="_"
             variant="outlined"
             name="phoneNumber"
+            inputRef={inputRef}
             label="Phone Number"
             allowEmptyFormatting
+            customInput={TextField}
+            value={inputs.phoneNumber}
+            // +82-1-234-56-78
+            format="+82 (#) ###-##-##"
             onChange={(event) => {
               if (event.target.value === inputs.phoneNumber) return;
               handleInput(event);
             }}
-            customInput={TextField}
-            value={inputs.phoneNumber}
-            format="+82 (###) #### ###"
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
@@ -213,13 +238,13 @@ export function Screen({ data }: { data: IData }) {
           <Autocomplete
             options={Object.keys(data.prices).map((carModel) => carModel)}
             value={carModel || null}
+            inputValue={carInput}
+            onInputChange={(event, inputValue) => setCarInput(inputValue)}
             onChange={(event: any, carValue: string | null) => {
               autoComplete(carValue);
             }}
-            inputValue={carInput}
-            onInputChange={(event, inputValue) => setCarInput(inputValue)}
             renderInput={(params) => (
-              <TextField {...params} label="Car Model" />
+              <TextField required {...params} label="Car Model" />
             )}
           />
         </section>
@@ -261,7 +286,7 @@ export function Screen({ data }: { data: IData }) {
           value={inputs.cash}
           total={inputs.total}
           onChange={handleInput}
-          icon={<MonetizationOnOutlined />}
+          icon={<PaymentsOutlined />}
         />
         <NumericInput
           name="card"
