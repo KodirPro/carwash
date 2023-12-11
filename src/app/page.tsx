@@ -4,7 +4,7 @@ export default async function Page() {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}db`, {
     headers: {
       Authorization:
-        "Basic " + Buffer.from("asd" + ":" + "asd").toString("base64"),
+        "Basic " + Buffer.from("Администратор" + ":" + "123").toString("base64"),
     },
   });
 

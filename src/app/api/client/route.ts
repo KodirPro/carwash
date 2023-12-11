@@ -23,7 +23,8 @@ export async function POST(request: NextRequest) {
   const { link, ...body } = data;
 
   const res = await fetch(data.link, {
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json" , Authorization:
+    "Basic " + Buffer.from("Администратор" + ":" + "123").toString("base64")},
     body: JSON.stringify(body),
     cache: "no-cache",
     method: "POST",
