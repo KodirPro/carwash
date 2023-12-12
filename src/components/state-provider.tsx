@@ -9,6 +9,7 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [showWarningMessage, setShowWarningMessage] = useState(false);
   const inputRefPhoneNumber = useRef<HTMLInputElement>(null);
+  const inputRefCarmodel = useRef<HTMLInputElement>(null);
   const [successMessage, setSuccessMessage] = useState("");
   const [showDialog, setShowDialog] = useState(false);
   const [refreshing, setRefreshing] = useState(true);
@@ -132,7 +133,6 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
   const sendData = async () => {
     if (!inputs.carNumber.trim() || !inputs.total)
       return setShowWarningMessage(true);
-
     const res = await fetch("api/client", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -155,7 +155,10 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
   };
 
   const getClient = async (event: React.KeyboardEvent<HTMLDivElement>) => {
-    if (event.key !== "Enter" || !inputs.carNumber) return;
+    if (!inputs.carNumber) return;
+
+    if (event.type === "click") "pass";
+    else if (event.key !== "Enter") return;
 
     const res = await fetch("api/client", {
       method: "POST",
@@ -208,7 +211,6 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
         _showWarningMessage: [showWarningMessage, setShowWarningMessage],
         _successMessage: [successMessage, setSuccessMessage],
         _showDialog: [showDialog, setShowDialog],
-        // _refreshing: [refreshing, setRefreshing],
         _newClient: [newClient, setNewClient],
         _carInput: [carInput, setCarInput],
         _carModel: [carModel, setCarModel],
@@ -218,6 +220,7 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
         inputRefPhoneNumber,
         closeSuccessMessage,
         closeWarningMessage,
+        inputRefCarmodel,
         autoComplete,
         removeOrder,
         handleInput,

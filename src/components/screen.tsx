@@ -28,6 +28,7 @@ import {
   PinOutlined,
   MenuOutlined,
   PhoneOutlined,
+  SearchOutlined,
   PaymentsOutlined,
   CreditCardOutlined,
 } from "@mui/icons-material";
@@ -43,7 +44,6 @@ export function Screen({ data }: { data: IData }) {
             <div className="relative">
               <TextField
                 required
-                type="search"
                 name="carNumber"
                 variant="outlined"
                 label="Car Number"
@@ -62,6 +62,13 @@ export function Screen({ data }: { data: IData }) {
                   ),
                 }}
               />
+              <button
+                className="absolute right-2 bottom-1/2 translate-y-1/2 flex justify-center items-center w-10 h-10 bg-sky-50 text-sky-600 hover:bg-sky-200 rounded p-1 shadow-md"
+                onClick={(event) => c.getClient(event)}
+                aria-label="add"
+              >
+                <SearchOutlined />
+              </button>
               {c._newClient[0] && (
                 <div className="absolute -top-2.5 right-2.5 py-1 px-2 rounded shadow-md bg-emerald-500 text-white text-xs leading-none font-bold animate-fade-in">
                   New Client
@@ -78,6 +85,9 @@ export function Screen({ data }: { data: IData }) {
               value={c._inputs[0].phoneNumber}
               format="+82 (#) ###-##-##"
               inputRef={c.inputRefPhoneNumber}
+              onKeyDown={(event) =>
+                event.key === "Enter" && c.inputRefCarmodel.current?.focus()
+              }
               onChange={(event) => {
                 if (event.target.value === c._inputs[0].phoneNumber) return;
                 c.handleInput(event);
@@ -99,7 +109,12 @@ export function Screen({ data }: { data: IData }) {
                 c.autoComplete(carValue);
               }}
               renderInput={(params) => (
-                <TextField required {...params} label="Car Model" />
+                <TextField
+                  required
+                  {...params}
+                  label="Car Model"
+                  inputRef={c.inputRefCarmodel}
+                />
               )}
             />
           </section>
@@ -169,7 +184,7 @@ export function Screen({ data }: { data: IData }) {
                 Total &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: {c._inputs[0].total} ₩
               </span>
             </span>
-          </DialogContentText>  
+          </DialogContentText>
         </DialogContent>
         <DialogActions className="gap-1.5 pb-4 px-6">
           <Button onClick={c.closeDialog} className="bg-rose-600">
