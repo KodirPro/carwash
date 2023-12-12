@@ -1,6 +1,7 @@
 "use client";
 
-import { ActiveButtons } from ".";
+import { useContext } from "react";
+import { ActiveButtons, StateContext } from ".";
 import { IOrder } from "./types";
 import {
   AddOutlined,
@@ -8,25 +9,13 @@ import {
   AccountBalanceWalletOutlined,
 } from "@mui/icons-material";
 
-export function Basket({
-  total,
-  basket,
-  sendData,
-  addOrder,
-  removeOrder,
-  clearInputs,
-}: {
-  total: number;
-  basket: IOrder[];
-  sendData: Function;
-  addOrder: Function;
-  removeOrder: Function;
-  clearInputs: Function;
-}) {
+export function Basket() {
+  const c = useContext(StateContext);
+
   return (
     <div className="grid grid-rows-[min-content_auto_min-content] lg:grid-rows-[auto_min-content] overflow-hidden whitespace-nowrap bg-amber-50 shadow-lg">
       <section className="lg:hidden flex justify-evenly py-1 pb-2.5 animate-fade-in text-3xl ">
-        <ActiveButtons clearInputs={clearInputs} sendData={sendData} />
+        <ActiveButtons />
       </section>
       <div className="overflow-auto bg-white shadow-md scrollbar-thin scrollbar-thumb-blue-200 scrollbar-track-transparent">
         <table className="w-full">
@@ -38,7 +27,7 @@ export function Basket({
             </tr>
           </thead>
           <tbody className="text-sm">
-            {basket.map((order) => (
+            {c._basket[0].map((order: IOrder) => (
               <tr
                 key={order.service}
                 className="even:bg-blue-50 last:shadow-md text-center"
@@ -53,7 +42,7 @@ export function Basket({
                   <div className="flex items-center justify-center gap-2">
                     <button
                       className="flex justify-center items-center w-8 h-8 bg-rose-50 text-rose-600 hover:bg-rose-200 rounded shadow-md"
-                      onClick={() => removeOrder(order)}
+                      onClick={() => c.removeOrder(order)}
                       aria-label="remove"
                     >
                       <RemoveOutlined />
@@ -61,7 +50,7 @@ export function Basket({
                     <span>{order.orderCount}</span>
                     <button
                       className="flex justify-center items-center w-8 h-8 bg-emerald-50 text-emerald-600 hover:bg-emerald-200 rounded p-1 shadow-md"
-                      onClick={() => addOrder(order)}
+                      onClick={() => c.addOrder(order)}
                       aria-label="add"
                     >
                       <AddOutlined />
@@ -74,10 +63,12 @@ export function Basket({
         </table>
       </div>
       <div className="grid gap-1 p-8 pt-5 text-slate-600 text-xl">
-        <h3 className="font-medium px-2">Total:</h3>
+        <div className="font-medium px-2">Total:</div>
         <div className="p-3.5 font-medium bg-emerald-50 rounded-md shadow-md">
           <AccountBalanceWalletOutlined className="text-slate-500" />{" "}
-          <span className="font-bold text-2xl pl-1 align-middle">{total}</span>
+          <span className="font-bold text-2xl pl-1 align-middle">
+            {c._inputs[0].total}
+          </span>
         </div>
       </div>
     </div>

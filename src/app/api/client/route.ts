@@ -1,37 +1,42 @@
+import { getToken } from "next-auth/jwt";
 import { NextResponse, NextRequest } from "next/server";
 
-export async function GET(request: NextRequest) {
-  const {
-    nextUrl: { searchParams },
-  } = request;
-  const queryParams = new URLSearchParams(searchParams);
-  const link = queryParams.get("link") || "";
-  queryParams.delete("link");
+export async function POST(req: NextRequest) {
+  let res: any;
+  const data = await req.json();
+  const { link = "http://.", method, ...body } = data;
+  const cache = "no-cache";
+  const token = await getToken({ req });
+  const Authorization =
+    "Basic " + Buffer.from(`${token?.name}:${token?.sub}`).toString("base64");
 
-  const res = await fetch(new URL(`?${queryParams}`, link), {
-    cache: "no-cache",
-  });
+  if (method === "POST") {
+    res = await fetch(link, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization,
+      },
+      body: JSON.stringify(body),
+      method,
+      cache,
+    });
+  } else {
+    res = await fetch(new URL(`?${new URLSearchParams(body)}`, link), {
+      headers: { Authorization },
+      cache,
+    });
+  }
 
-  if (res.ok) {
-    const data = await res.json();
-    return NextResponse.json(data, { status: 200 });
-  } else return NextResponse.json({}, { status: res.status });
-}
+  if (res) {
+    // return new NextResponse(res);
+    if (res.ok) {
+      try {
+        const data = await res.json();
 
-export async function POST(request: NextRequest) {
-  const data = await request.json();
-  const { link, ...body } = data;
-
-  const res = await fetch(data.link, {
-    headers: { "Content-Type": "application/json" , Authorization:
-    "Basic " + Buffer.from("Администратор" + ":" + "123").toString("base64")},
-    body: JSON.stringify(body),
-    cache: "no-cache",
-    method: "POST",
-  });
-
-  if (res.ok) {
-    const data = await res.json();
-    return NextResponse.json(data, { status: 200 });
-  } else return NextResponse.json({}, { status: res.status });
+        return NextResponse.json(data, { status: 200 });
+      } catch (error) {
+        return NextResponse.next({ request: req });
+      }
+    } else return NextResponse.json({}, { status: res.status });
+  } else NextResponse.json({ message: "SERVER ERROR" }, { status: 500 });
 }

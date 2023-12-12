@@ -1,3 +1,5 @@
+"use client";
+
 import Script from "next/script";
 import React from "react";
 import { Button } from ".";
@@ -12,7 +14,7 @@ export function PwaEnd() {
       >
         Install APP
       </Button>
-      <Script src="/pwa-end.js" />
+      <Script src="pwa-end.js" />
     </>
   );
 }

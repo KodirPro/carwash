@@ -3,7 +3,6 @@
   "short_name": "Car Wash",
   "theme_color": "#172554",
   "background_color": "#e0f2fe",
-  "start_url": "/",
   "display": "standalone",
   "orientation": "any",
   "id": "/",
@@ -82,5 +81,15 @@
       "url": "/"
     }
   ],
-  "protocol_handlers": [{}]
+  "start_url": "/",
+  "protocol_handlers": [
+    {
+      "protocol": "web+jngl",
+      "url": "/lookup?type=%s"
+    },
+    {
+      "protocol": "web+jnglstore",
+      "url": "/shop?for=%s"
+    }
+  ]
 }

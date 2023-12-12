@@ -18,7 +18,6 @@ export interface IData {
 
 export interface IOrder {
   orderCount: number;
-  carModel: string;
   service: string;
   price: number;
 }

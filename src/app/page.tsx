@@ -1,17 +1,19 @@
-import { Screen } from "@/components";
+import { App } from "@/components";
 
 export default async function Page() {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}db`, {
     headers: {
-      Authorization:
-        "Basic " + Buffer.from("Администратор" + ":" + "123").toString("base64"),
+      Authorization: `Basic ${Buffer.from("asd:asd").toString("base64")}`,
     },
+    next: { tags: ["data"] },
   });
+
+  console.log("PAGE UPDATED");
 
   if (res.ok) {
     const data = await res.json();
 
-    return <Screen data={data} />;
+    return <App data={data} />;
   }
 
   return <>Error data</>;

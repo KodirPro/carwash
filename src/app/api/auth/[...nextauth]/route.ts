@@ -25,11 +25,11 @@ const authOptions: NextAuthOptions = {
             },
           });
 
-          if (res.ok) {
-            const user = await res.json();
-
-            return user;
-          }
+          if (res.ok)
+            return {
+              id: credentials?.password || "1",
+              name: credentials?.name,
+            };
         } catch (error) {
           console.error(error);
         }

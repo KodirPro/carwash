@@ -13,9 +13,14 @@ const config: Config = {
           from: { opacity: "0" },
           to: { opacity: "1" },
         },
+        "fade-left": {
+          from: { opacity: "0", transform: "translateX(10rem)" },
+          to: { opacity: "1", transform: "translateX(0)" },
+        },
       },
       animation: {
         "fade-in": "fade-in 500ms ease-in",
+        "fade-left": "fade-left 300ms ease-out",
       },
     },
   },

@@ -2,14 +2,12 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
 
-export async function middleware(request: NextRequest) {
+export async function middleware(req: NextRequest) {
   const {
     nextUrl: { origin, pathname, searchParams },
-  } = request;
+  } = req;
   const queryParams = new URLSearchParams(searchParams);
-  const token = await getToken({ req: request });
-  console.log(token);
-  
+  const token = await getToken({ req });
 
   if (
     ["/", "/api/client", "/api/auth/signout", "/api/update-page"].includes(
@@ -24,7 +22,7 @@ export async function middleware(request: NextRequest) {
   if (pathname.startsWith("/api/auth/signin") && token)
     return NextResponse.redirect(new URL(`/?${queryParams}`, origin));
 
-  return NextResponse.next({ request });
+  return NextResponse.next({ request: req });
 }
 
 export const config = { matcher: "/:path*" };

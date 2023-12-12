@@ -1,9 +1,9 @@
 import { NextResponse, NextRequest } from "next/server";
-import { revalidatePath } from "next/cache";
+import { revalidateTag } from "next/cache";
 
 export async function GET(request: NextRequest) {
   try {
-    revalidatePath("/", "layout");
+    revalidateTag("data");
 
     return NextResponse.redirect(new URL("/", request.url));
   } catch (error: any) {
