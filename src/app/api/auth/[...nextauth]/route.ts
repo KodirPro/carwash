@@ -39,7 +39,7 @@ const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async redirect() {
-      return "/api/update-page";
+      return `${process.env.NEXTAUTH_URL}/api/update-page`;
     },
   },
   secret: process.env.NEXTAUTH_SECRET,

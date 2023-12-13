@@ -10,6 +10,7 @@ export async function POST(req: NextRequest) {
   const Authorization =
     "Basic " + Buffer.from(`${token?.name}:${token?.sub}`).toString("base64");
 
+
   if (method === "POST") {
     res = await fetch(link, {
       headers: {

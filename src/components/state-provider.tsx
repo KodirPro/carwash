@@ -133,7 +133,7 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
   const sendData = async () => {
     if (!inputs.carNumber.trim() || !inputs.total)
       return setShowWarningMessage(true);
-    const res = await fetch("api/client", {
+    const res = await fetch(`/api/client`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -155,17 +155,19 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
   };
 
   const getClient = async (event: React.KeyboardEvent<HTMLDivElement>) => {
+
     if (!inputs.carNumber) return;
 
     if (event.type === "click") "pass";
     else if (event.key !== "Enter") return;
 
-    const res = await fetch("api/client", {
+    const res = await fetch(`/api/client`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         link: `${process.env.NEXT_PUBLIC_API_URL}car`,
-        carNumber: inputs.carNumber,
+        carNumber: inputs.carNumber, 
+	   method: "POST",
       }),
     });
 
