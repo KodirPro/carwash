@@ -24,10 +24,10 @@ const authOptions: NextAuthOptions = {
                 ).toString("base64"),
             },
           });
-          
+
           if (res.ok)
             return {
-              id: credentials?.password || "1",
+              id: credentials?.password ?? "",
               name: credentials?.name,
             };
         } catch (error) {
@@ -39,11 +39,11 @@ const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async redirect() {
-      return `${process.env.NEXTAUTH_URL}/api/update-page`;
+      return "/api/update-page";
     },
   },
   secret: process.env.NEXTAUTH_SECRET,
-  jwt: { maxAge: 86400 * 7 },
+  jwt: { maxAge: 86400 },
 };
 
 const handler = NextAuth(authOptions);

@@ -1,13 +1,14 @@
-import { NextResponse, NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 import { revalidateTag } from "next/cache";
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     revalidateTag("data");
 
-    return NextResponse.redirect(new URL(process.env.NEXTAUTH_URL || "/", request.url));
+    return NextResponse.redirect(process.env.NEXTAUTH_URL || "");
   } catch (error: any) {
     console.log("===> Page not updated");
+
     return NextResponse.json({ message: "Server Error" }, { status: 500 });
   }
 }

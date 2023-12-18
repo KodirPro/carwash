@@ -8,8 +8,8 @@ export function Services({ data }: { data: IData }) {
   const c = useContext(StateContext);
 
   return (
-    <div className="p-5 sm:p-10 overflow-auto bg-slate-50 scrollbar-thin scrollbar-thumb-blue-200 scrollbar-track-transparent">
-      <div className="flex flex-wrap justify-evenly gap-5 sm:gap-10">
+    <div className="p-8 overflow-x-hidden overflow-y-auto bg-slate-50 scrollbar-thin scrollbar-thumb-blue-200 scrollbar-track-transparent">
+      <div className="flex flex-wrap justify-center gap-8 sm:gap-10 min-w-[20rem]">
         {c._carModel[0] && data.prices[c._carModel[0]]
           ? Object.entries(data.prices[c._carModel[0]]).map(
               ([service, price]) => (
@@ -21,7 +21,7 @@ export function Services({ data }: { data: IData }) {
                     onClick={() =>
                       c.addOrder({ service, price, orderCount: 1 })
                     }
-                    className="w-44 h-44 rounded-lg shadow-lg bg-cover bg-center overflow-hidden transition-transform duration-300 active:scale-95"
+                    className="w-36 h-36 sm:w-44 sm:h-44 rounded-lg shadow-lg bg-cover bg-center overflow-hidden transition-transform duration-300 active:scale-95"
                     style={{
                       backgroundImage: `url('data:image/gif;base64,${data.services[
                         service
@@ -54,7 +54,7 @@ export function Services({ data }: { data: IData }) {
                       service
                     ].image.replaceAll("\r\n", "")}')`,
                   }}
-                  className="w-44 h-44 rounded-lg shadow-lg bg-cover bg-center overflow-hidden"
+                  className="w-36 h-36 sm:w-44 sm:h-44 rounded-lg shadow-lg bg-cover bg-center overflow-hidden"
                 >
                   <div className="h-full w-full grid place-content-end justify-start p-2 bg-gradient-to-b from-transparent from-25% to-60% to-black/60 text-white text-left text-lg font-medium">
                     <div className="line-clamp-2 leading-tight">{service}</div>

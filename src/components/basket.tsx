@@ -13,14 +13,14 @@ export function Basket() {
   const c = useContext(StateContext);
 
   return (
-    <div className="grid grid-rows-[min-content_auto_min-content] lg:grid-rows-[auto_min-content] overflow-hidden whitespace-nowrap bg-amber-50 shadow-lg">
+    <div className="grid grid-rows-[min-content_auto_min-content] lg:grid-rows-[auto_min-content] overflow-hidden whitespace-nowrap bg-amber-50 shadow-lg min-w-[20rem]">
       <section className="lg:hidden flex justify-evenly py-1 pb-2.5 animate-fade-in text-3xl ">
         <ActiveButtons />
       </section>
       <div className="overflow-auto bg-white shadow-md scrollbar-thin scrollbar-thumb-blue-200 scrollbar-track-transparent">
         <table className="w-full">
           <thead>
-            <tr className="bg-blue-950 sticky top-0 z-10 text-white text-lg text-center font-medium">
+            <tr className="bg-blue-950 sticky top-0 z-10 text-white sm:text-lg text-center font-medium">
               <th className="pl-3 py-2.5 text-left">Service</th>
               <th className="px-0 py-2.5">Price</th>
               <th className="py-2.5">Count</th>

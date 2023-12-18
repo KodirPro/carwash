@@ -1,6 +1,6 @@
 "use client";
 
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { signOut } from "next-auth/react";
 import { Button, StateContext, Tooltips } from ".";
 import {
@@ -97,11 +97,13 @@ export function ActiveButtons() {
             </div>
             <div>
               Car Service :{" "}
-              <span className="text-rose-600">
-                <QuestionMarkOutlinedIcon />
-                <QuestionMarkOutlinedIcon />
-                <QuestionMarkOutlinedIcon />
-              </span>
+              {c._basket?.[0].length || (
+                <span className="text-rose-600">
+                  <QuestionMarkOutlinedIcon />
+                  <QuestionMarkOutlinedIcon />
+                  <QuestionMarkOutlinedIcon />
+                </span>
+              )}
             </div>
           </pre>
         </Alert>

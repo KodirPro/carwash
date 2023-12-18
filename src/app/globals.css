@@ -17,3 +17,7 @@
 .MuiInputBase-input {
   border-radius: 0.25rem;
 }
+
+.MuiModal-backdrop {
+  backdrop-filter: blur(0.5rem);
+}

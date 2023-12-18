@@ -42,10 +42,13 @@ export interface IStoredData {
 }
 
 export interface INumericInput {
-  onChange: (event: React.ChangeEvent<HTMLInputElement>, separator?: string) => void;
+  onChange: (
+    event: React.ChangeEvent<HTMLInputElement>,
+    separator?: string,
+  ) => void;
   value: string | number;
   icon: React.ReactNode;
-  separator?: string
+  separator?: string;
   total: number;
   label: string;
   name: string;

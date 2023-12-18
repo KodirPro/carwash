@@ -9,10 +9,10 @@ const HtmlTooltip = styled(({ className, ...props }: TooltipProps) => (
   <Tooltip {...props} classes={{ popper: className }} />
 ))(({ theme }) => ({
   [`& .${tooltipClasses.tooltip}`]: {
-    backgroundColor: "white",
+    boxShadow: "0 0.25rem 0.5rem #0003",
+    backgroundColor: "#fde68a",
     color: "inherit",
     maxWidth: 220,
-    border: "1px solid #0003",
   },
 }));
 
@@ -25,6 +25,8 @@ export function Tooltips({
 }) {
   return (
     <HtmlTooltip
+      arrow
+      placement="top"
       title={
         <React.Fragment>
           <Typography color="inherit">{description}</Typography>

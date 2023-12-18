@@ -11,7 +11,6 @@ import {
   ActiveButtons,
   StateContext,
 } from "@/components";
-import { PatternFormat } from "react-number-format";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import InputAdornment from "@mui/material/InputAdornment";
@@ -39,7 +38,7 @@ export function Screen({ data }: { data: IData }) {
   return (
     <>
       <div className="fixed inset-0 grid grid-rows-[min-content_auto_min-content] animate-fade-in">
-        <header className="bg-sky-100 flex gap-5 p-6 justify-between items-center shadow-md relative">
+        <header className="bg-sky-100 flex gap-5 p-4 sm:p-6 justify-between items-center shadow-md relative">
           <section className="grid h-16 pt-2 sm:h-auto overflow-y-auto sm:overflow-y-visible sm:grid-cols-3 gap-x-5 gap-y-8 items-top scrollbar-thin scrollbar-thumb-blue-200 scrollbar-track-transparent animate-fade-in">
             <div className="relative">
               <TextField
@@ -47,11 +46,8 @@ export function Screen({ data }: { data: IData }) {
                 name="carNumber"
                 variant="outlined"
                 label="Car Number"
-                onChange={(event) => {
-                  const value = event.target.value;
-                  if (value !== "" && !/^[a-zA-Z0-9\s]+$/.test(value)) return;
-                  c.handleInput(event);
-                }}
+                onChange={c.handleInput}
+                placeholder="000저0000"
                 value={c._inputs[0].carNumber}
                 onKeyDown={(event) => c.getClient(event)}
                 InputProps={{
@@ -70,28 +66,26 @@ export function Screen({ data }: { data: IData }) {
                 <SearchOutlined />
               </button>
               {c._newClient[0] && (
-                <div className="absolute -top-2.5 right-2.5 py-1 px-2 rounded shadow-md bg-emerald-500 text-white text-xs leading-none font-bold animate-fade-in">
+                <div className="absolute z-10 -top-2 sm:-top-2.5 right-2.5 py-0.5 sm:py-1 px-2 rounded shadow-md bg-emerald-500 text-white text-xs leading-none font-bold pointer-events-none animate-fade-in">
                   New Client
                 </div>
               )}
             </div>
-            <PatternFormat
-              mask="_"
-              variant="outlined"
+            <TextField
               name="phoneNumber"
+              variant="outlined"
               label="Phone Number"
-              allowEmptyFormatting
-              customInput={TextField}
+              placeholder="+___-____-____"
+              onChange={(event) => {
+                const value = event.target.value;
+                if (value !== "" && !/^[0-9\s\+\-\(\)]+$/.test(value)) return;
+                c.handleInput(event);
+              }}
               value={c._inputs[0].phoneNumber}
-              format="+82 (#) ###-##-##"
               inputRef={c.inputRefPhoneNumber}
               onKeyDown={(event) =>
                 event.key === "Enter" && c.inputRefCarmodel.current?.focus()
               }
-              onChange={(event) => {
-                if (event.target.value === c._inputs[0].phoneNumber) return;
-                c.handleInput(event);
-              }}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -101,13 +95,13 @@ export function Screen({ data }: { data: IData }) {
               }}
             />
             <Autocomplete
-              options={Object.keys(data.prices).map((carModel) => carModel)}
-              value={c._carModel[0] || null}
               inputValue={c._carInput[0]}
+              value={c._carModel[0] || null}
+              options={Object.keys(data.prices).map((carModel) => carModel)}
               onInputChange={(event, inputValue) => c._carInput[1](inputValue)}
-              onChange={(event: any, carValue: string | null) => {
-                c.autoComplete(carValue);
-              }}
+              onChange={(event: any, carValue: string | null) =>
+                c.autoComplete(carValue)
+              }
               renderInput={(params) => (
                 <TextField
                   required
@@ -136,7 +130,7 @@ export function Screen({ data }: { data: IData }) {
           </section>
         </header>
         <main
-          className="relative grid overflow-hidden transition-all duration-500"
+          className="relative grid overflow-hidden transition-all duration-700"
           style={{
             gridTemplateColumns: c._openMenu[0] ? "auto 20rem" : "auto 0rem",
           }}
@@ -144,7 +138,7 @@ export function Screen({ data }: { data: IData }) {
           <Services data={data} />
           <Basket />
         </main>
-        <footer className="bg-amber-200 flex gap-5 p-6 justify-evenly items-center">
+        <footer className="bg-amber-200 flex gap-5 p-4 sm:p-6 justify-evenly items-center">
           <NumericInput
             name="cash"
             label="Cash"
@@ -176,7 +170,7 @@ export function Screen({ data }: { data: IData }) {
           <DialogContentText>
             <span
               style={{ fontFamily: "var(--ubuntu-mono)" }}
-              className="font-bold text-xl grid"
+              className="font-bold text-lg sm:text-xl grid"
             >
               <span>Car number : {c._inputs[0].carNumber}</span>
               <span>Car model &nbsp;: {c._carModel[0]}</span>
