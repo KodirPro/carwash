@@ -1,7 +1,7 @@
 "use client";
 
 import { useContext } from "react";
-import { ActiveButtons, StateContext } from ".";
+import { ActiveButtons, StateContext } from "@/components";
 import { IOrder } from "./types";
 import {
   AddOutlined,
@@ -13,11 +13,11 @@ export function Basket() {
   const c = useContext(StateContext);
 
   return (
-    <div className="grid grid-rows-[min-content_auto_min-content] lg:grid-rows-[auto_min-content] overflow-hidden whitespace-nowrap bg-amber-50 shadow-lg min-w-[20rem]">
-      <section className="lg:hidden flex justify-evenly py-1 pb-2.5 animate-fade-in text-3xl ">
+    <div className="grid grid-rows-[min-content_auto_min-content] lg:grid-rows-[auto_min-content] min-w-[20rem] overflow-y-auto whitespace-nowrap bg-amber-50 shadow-lg">
+      <section className="lg:hidden flex justify-evenly py-1 animate-fade-in text-3xl ">
         <ActiveButtons />
       </section>
-      <div className="overflow-auto bg-white shadow-md scrollbar-thin scrollbar-thumb-blue-200 scrollbar-track-transparent">
+      <section className="overflow-auto bg-white shadow-md scrollbar-thin scrollbar-thumb-blue-200 scrollbar-track-transparent">
         <table className="w-full">
           <thead>
             <tr className="bg-blue-950 sticky top-0 z-10 text-white sm:text-lg text-center font-medium">
@@ -61,8 +61,8 @@ export function Basket() {
             ))}
           </tbody>
         </table>
-      </div>
-      <div className="grid gap-1 p-8 pt-5 text-slate-600 text-xl">
+      </section>
+      <section className="grid gap-1 p-4 pt-2 sm:p-8 sm:pt-5 text-slate-600 text-xl">
         <div className="font-medium px-2">Total:</div>
         <div className="p-3.5 font-medium bg-emerald-50 rounded-md shadow-md">
           <AccountBalanceWalletOutlined className="text-slate-500" />{" "}
@@ -70,7 +70,7 @@ export function Basket() {
             {c._inputs[0].total}
           </span>
         </div>
-      </div>
+      </section>
     </div>
   );
 }

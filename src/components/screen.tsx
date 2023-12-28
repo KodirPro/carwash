@@ -6,30 +6,22 @@ import {
   Basket,
   Services,
   NumericInput,
-  Button,
-  Tooltips,
   ActiveButtons,
   StateContext,
+  Button,
+  Tooltips,
 } from "@/components";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import InputAdornment from "@mui/material/InputAdornment";
 import {
-  Alert,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Snackbar,
-} from "@mui/material";
-import {
   PinOutlined,
-  MenuOutlined,
   PhoneOutlined,
   SearchOutlined,
+  CommentOutlined,
   PaymentsOutlined,
   CreditCardOutlined,
+  MenuOutlined,
 } from "@mui/icons-material";
 
 export function Screen({ data }: { data: IData }) {
@@ -48,9 +40,10 @@ export function Screen({ data }: { data: IData }) {
                 label="Car Number"
                 onChange={c.handleInput}
                 placeholder="000저0000"
-                value={c._inputs[0].carNumber}
+                value={c._inputs[0].carNumber || ""}
                 onKeyDown={(event) => c.getClient(event)}
                 InputProps={{
+                  readOnly: c._newClient[0],
                   startAdornment: (
                     <InputAdornment position="start">
                       <PinOutlined />
@@ -76,17 +69,18 @@ export function Screen({ data }: { data: IData }) {
               variant="outlined"
               label="Phone Number"
               placeholder="+___-____-____"
+              inputRef={c.inputRefPhoneNumber}
+              value={c._inputs[0].phoneNumber || ""}
               onChange={(event) => {
                 const value = event.target.value;
                 if (value !== "" && !/^[0-9\s\+\-\(\)]+$/.test(value)) return;
                 c.handleInput(event);
               }}
-              value={c._inputs[0].phoneNumber}
-              inputRef={c.inputRefPhoneNumber}
               onKeyDown={(event) =>
                 event.key === "Enter" && c.inputRefCarmodel.current?.focus()
               }
               InputProps={{
+                disabled: !c._newClient[0],
                 startAdornment: (
                   <InputAdornment position="start">
                     <PhoneOutlined />
@@ -95,10 +89,13 @@ export function Screen({ data }: { data: IData }) {
               }}
             />
             <Autocomplete
-              inputValue={c._carInput[0]}
+              disabled={!c._newClient[0]}
+              inputValue={c._carModelInput[0]}
               value={c._carModel[0] || null}
               options={Object.keys(data.prices).map((carModel) => carModel)}
-              onInputChange={(event, inputValue) => c._carInput[1](inputValue)}
+              onInputChange={(event, inputValue) =>
+                c._carModelInput[1](inputValue)
+              }
               onChange={(event: any, carValue: string | null) =>
                 c.autoComplete(carValue)
               }
@@ -112,10 +109,14 @@ export function Screen({ data }: { data: IData }) {
               )}
             />
           </section>
-          <section className="flex gap-5 animate-fade-in text-3xl">
+          <section className="flex gap-3.5 animate-fade-in text-3xl">
+            <div className="hidden lg:flex gap-3.5 animate-fade-in">
+              <ActiveButtons />
+            </div>
             <Tooltips description="Menu">
               <div>
                 <Button
+                  square
                   aria-label="menu"
                   className="bg-blue-500"
                   onClick={() => c._openMenu[1](!c._openMenu[0])}
@@ -124,9 +125,6 @@ export function Screen({ data }: { data: IData }) {
                 </Button>
               </div>
             </Tooltips>
-            <div className="hidden lg:flex gap-5 animate-fade-in">
-              <ActiveButtons />
-            </div>
           </section>
         </header>
         <main
@@ -138,7 +136,7 @@ export function Screen({ data }: { data: IData }) {
           <Services data={data} />
           <Basket />
         </main>
-        <footer className="bg-amber-200 flex gap-5 p-4 sm:p-6 justify-evenly items-center">
+        <footer className="bg-amber-200 grid grid-cols-2 sm:flex gap-5 p-4 sm:p-6 items-center">
           <NumericInput
             name="cash"
             label="Cash"
@@ -155,57 +153,26 @@ export function Screen({ data }: { data: IData }) {
             onChange={c.handleInput}
             icon={<CreditCardOutlined />}
           />
+          <TextField
+            fullWidth
+            type="search"
+            name="comment"
+            label="Comment"
+            placeholder="Abc..."
+            variant="outlined"
+            onChange={c.handleInput}
+            className="col-span-2 w-full sm:max-w-md"
+            value={c._inputs[0].comment || ""}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <CommentOutlined />
+                </InputAdornment>
+              ),
+            }}
+          />
         </footer>
       </div>
-      <Dialog
-        open={c._showDialog[0]}
-        onClose={c.closeDialog}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle sx={{ fontFamily: "inherit" }}>
-          Are you sure you want to submit this order?
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            <span
-              style={{ fontFamily: "var(--ubuntu-mono)" }}
-              className="font-bold text-lg sm:text-xl grid"
-            >
-              <span>Car number : {c._inputs[0].carNumber}</span>
-              <span>Car model &nbsp;: {c._carModel[0]}</span>
-              <span>
-                Total &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: {c._inputs[0].total} ₩
-              </span>
-            </span>
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions className="gap-1.5 pb-4 px-6">
-          <Button onClick={c.closeDialog} className="bg-rose-600">
-            Cancel
-          </Button>
-          <Button onClick={c.sendData} className="bg-emerald-600" autoFocus>
-            Send
-          </Button>
-        </DialogActions>
-      </Dialog>
-      <Snackbar
-        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-        autoHideDuration={5000}
-        onClose={c.closeSuccessMessage}
-        open={c._showSuccessMessage[0]}
-      >
-        <Alert
-          className="bg-emerald-600 animate-fade-left"
-          onClose={c.closeSuccessMessage}
-          severity="success"
-          variant="filled"
-          elevation={6}
-        >
-          <div>Order received with ID:</div>
-          <div className="font-bold">{c._successMessage[0]}</div>
-        </Alert>
-      </Snackbar>
     </>
   );
 }

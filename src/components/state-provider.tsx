@@ -11,20 +11,22 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
   const inputRefPhoneNumber = useRef<HTMLInputElement>(null);
   const inputRefCarmodel = useRef<HTMLInputElement>(null);
   const [successMessage, setSuccessMessage] = useState("");
-  const [showDialog, setShowDialog] = useState(false);
+  const [showSendDialog, setshowSendDialog] = useState(false);
   const [refreshing, setRefreshing] = useState(true);
   const [newClient, setNewClient] = useState(false);
-  const [carInput, setCarInput] = useState("");
+  const [carModelInput, setCarModelInput] = useState("");
   const [carModel, setCarModel] = useState<string | null>(null);
   const [openMenu, setOpenMenu] = useState(true);
   const [basket, setBasket] = useState<IOrder[]>([]);
-  const [inputs, setInputs] = useState<IInputs>({
+  const initialInputs: IInputs = {
     phoneNumber: "",
     carNumber: "",
+    comment: "",
     total: 0,
     cash: 0,
     card: 0,
-  });
+  };
+  const [inputs, setInputs] = useState<IInputs>(initialInputs);
 
   useEffect(() => {
     const storedData = localStorage.getItem("storedData");
@@ -119,15 +121,9 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
     localStorage.removeItem("storedData");
     setBasket([]);
     setNewClient(false);
+    setCarModelInput("");
     setCarModel(null);
-    setCarInput("");
-    setInputs({
-      phoneNumber: "",
-      carNumber: "",
-      total: 0,
-      cash: 0,
-      card: 0,
-    });
+    setInputs(initialInputs);
   };
 
   const sendData = async () => {
@@ -175,12 +171,18 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
 
       setNewClient(false);
       setCarModel(data.carModel);
-      setCarInput(data.carModel);
+      setCarModelInput(data.carModel);
       setInputs({ ...inputs, phoneNumber: data.phoneNumber });
-    } else {
+    } else if (res.status === 404) {
       setNewClient(true);
-      inputRefPhoneNumber.current?.focus();
-    }
+      setCarModelInput("");
+      setCarModel(null);
+      setInputs({
+        ...initialInputs,
+        carNumber: inputs.carNumber,
+      });
+      setTimeout(() => inputRefPhoneNumber.current?.focus(), 500);
+    } else console.log("Something went wrong!");
   };
 
   const closeSuccessMessage = (
@@ -202,7 +204,7 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
   };
 
   const closeDialog = () => {
-    setShowDialog(false);
+    setshowSendDialog(false);
   };
 
   return (
@@ -211,9 +213,9 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
         _showSuccessMessage: [showSuccessMessage, setShowSuccessMessage],
         _showWarningMessage: [showWarningMessage, setShowWarningMessage],
         _successMessage: [successMessage, setSuccessMessage],
-        _showDialog: [showDialog, setShowDialog],
+        _showSendDialog: [showSendDialog, setshowSendDialog],
         _newClient: [newClient, setNewClient],
-        _carInput: [carInput, setCarInput],
+        _carModelInput: [carModelInput, setCarModelInput],
         _carModel: [carModel, setCarModel],
         _openMenu: [openMenu, setOpenMenu],
         _basket: [basket, setBasket],

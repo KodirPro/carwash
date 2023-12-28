@@ -8,8 +8,8 @@ export function Services({ data }: { data: IData }) {
   const c = useContext(StateContext);
 
   return (
-    <div className="p-8 overflow-x-hidden overflow-y-auto bg-slate-50 scrollbar-thin scrollbar-thumb-blue-200 scrollbar-track-transparent">
-      <div className="flex flex-wrap justify-center gap-8 sm:gap-10 min-w-[20rem]">
+    <div className="py-8 overflow-x-hidden overflow-y-auto bg-slate-50 transition-all duration-700 scrollbar-thin scrollbar-thumb-blue-200 scrollbar-track-transparent">
+      <div className="px-5 sm:px-8 flex flex-wrap justify-center gap-8 sm:gap-10 min-w-[20rem]">
         {c._carModel[0] && data.prices[c._carModel[0]]
           ? Object.entries(data.prices[c._carModel[0]]).map(
               ([service, price]) => (
@@ -43,7 +43,8 @@ export function Services({ data }: { data: IData }) {
                 key={service}
                 description={
                   <>
-                    Please select one of the<br />
+                    Please select one of the
+                    <br />
                     <span className="font-sans">Car Model</span> first.
                   </>
                 }

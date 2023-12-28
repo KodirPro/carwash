@@ -32,6 +32,7 @@ export interface IInputs {
   card: number | string;
   phoneNumber: string;
   carNumber: string;
+  comment: string;
   total: number;
 }
 
