@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useEffect, useRef, useState } from "react";
-import { IInputs, IOrder, IStoredData } from "./types";
+import { IHistory, IInputs, IOrder, IStoredData } from "./types";
 
 export const StateContext = createContext<{ [key: string]: any }>({});
 
@@ -16,6 +16,7 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
   const [newClient, setNewClient] = useState(false);
   const [carModelInput, setCarModelInput] = useState("");
   const [carModel, setCarModel] = useState<string | null>(null);
+  const [carHistory, setCarHistory] = useState<IHistory[]>([]);
   const [openMenu, setOpenMenu] = useState(true);
   const [basket, setBasket] = useState<IOrder[]>([]);
   const initialInputs: IInputs = {
@@ -123,6 +124,7 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
     setNewClient(false);
     setCarModelInput("");
     setCarModel(null);
+    setCarHistory([]);
     setInputs(initialInputs);
   };
 
@@ -172,11 +174,11 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
       setNewClient(false);
       setCarModel(data.carModel);
       setCarModelInput(data.carModel);
+      setCarHistory(data.history);
       setInputs({ ...inputs, phoneNumber: data.phoneNumber });
     } else if (res.status === 404) {
+      clearInputs();
       setNewClient(true);
-      setCarModelInput("");
-      setCarModel(null);
       setInputs({
         ...initialInputs,
         carNumber: inputs.carNumber,
@@ -217,6 +219,7 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
         _newClient: [newClient, setNewClient],
         _carModelInput: [carModelInput, setCarModelInput],
         _carModel: [carModel, setCarModel],
+        _carHistory: [carHistory, setCarHistory],
         _openMenu: [openMenu, setOpenMenu],
         _basket: [basket, setBasket],
         _inputs: [inputs, setInputs],

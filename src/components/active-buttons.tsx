@@ -19,10 +19,20 @@ import {
   TaskAltOutlined,
 } from "@mui/icons-material";
 import QuestionMarkOutlinedIcon from "@mui/icons-material/QuestionMarkOutlined";
+import { IHistory } from "./types";
 
 export function ActiveButtons() {
   const c = useContext(StateContext);
   const [showHistoryDialog, setShowHistoryDialog] = useState(false);
+
+  const dateFormatter = (date: string) => {
+    return new Date(date).toLocaleDateString("ko-KR", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
 
   const closeHistoryDialog = () => {
     setShowHistoryDialog(false);
@@ -134,35 +144,40 @@ export function ActiveButtons() {
         </DialogTitle>
         <DialogContent>
           <DialogContentText>
-            <span className="grid grid-cols-4 min-w-[20rem] w-full max-w-2xl h-screen max-h-[30rem] overflow-auto text-lg sm:text-xl scrollbar-thin scrollbar-thumb-blue-200 scrollbar-track-transparent">
-              <span className="sticky top-0 z-10 flex items-center h-12 pl-1.5 bg-blue-950 text-white font-medium border-e border-slate-500 rounded-s">
-                1
+            <span className="grid grid-cols-4 min-w-[20rem] w-full h-screen max-h-[30rem] overflow-auto scrollbar-thin text-center scrollbar-thumb-blue-200 scrollbar-track-transparent">
+              <span className="sticky top-0 z-10 flex justify-center items-center h-12 px-3 bg-blue-950 text-white font-bold border-e border-slate-500 rounded-s">
+                Date
               </span>
-              <span className="sticky top-0 z-10 flex items-center h-12 pl-1.5 bg-blue-950 text-white font-medium border-e border-slate-500">
-                1
+              <span className="sticky top-0 z-10 flex justify-center items-center h-12 px-3 bg-blue-950 text-white font-bold border-e border-slate-500">
+                Service
               </span>
-              <span className="sticky top-0 z-10 flex items-center h-12 pl-1.5 bg-blue-950 text-white font-medium border-e border-slate-500">
-                1
+              <span className="sticky top-0 z-10 flex justify-center items-center h-12 px-3 bg-blue-950 text-white font-bold border-e border-slate-500">
+                Paid
               </span>
-              <span className="sticky top-0 z-10 flex items-center h-12 pl-1.5 bg-blue-950 text-white font-medium border-e border-slate-500 rounded-e">
-                1
+              <span className="sticky top-0 z-10 flex justify-center items-center h-12 px-3 bg-blue-950 text-white font-bold border-e border-slate-500 rounded-e">
+                Comment
               </span>
-              {Array.from("0123456789asdasda").map((item, i) => (
-                <Fragment key={i}>
-                  <span className="flex items-center h-10 pl-1.5 border-b">
-                    {item}
-                  </span>
-                  <span className="flex items-center h-10 pl-1.5 border-b">
-                    {item}
-                  </span>
-                  <span className="flex items-center h-10 pl-1.5 border-b">
-                    {item}
-                  </span>
-                  <span className="flex items-center h-10 pl-1.5 border-b">
-                    {item}
-                  </span>
-                </Fragment>
-              ))}
+              {c._carHistory[0]
+                .sort(
+                  (a: IHistory, b: IHistory) =>
+                    new Date(b.date).getTime() - new Date(a.date).getTime(),
+                )
+                .map((history: IHistory, i: number) => (
+                  <Fragment key={i}>
+                    <span className="block px-3 py-1 border-b">
+                      {dateFormatter(history.date)}
+                    </span>
+                    <span className="block px-3 py-1 border-b">
+                      {history.description}
+                    </span>
+                    <span className="block px-3 py-1 border-b">
+                      {history.price} ₩
+                    </span>
+                    <span className="block px-3 py-1 border-b">
+                      {history.comment}
+                    </span>
+                  </Fragment>
+                ))}
             </span>
           </DialogContentText>
         </DialogContent>

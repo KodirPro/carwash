@@ -54,3 +54,10 @@ export interface INumericInput {
   label: string;
   name: string;
 }
+
+export interface IHistory {
+  price: number;
+  description: string;
+  comment: string;
+  date: string;
+}
